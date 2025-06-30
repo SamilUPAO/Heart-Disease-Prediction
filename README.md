@@ -1,1 +1,1 @@
-# LabSem06_IHM
+# Heart Disease Prediction V1 
