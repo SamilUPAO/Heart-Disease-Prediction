@@ -99,10 +99,10 @@ def main():
 
         if prediction[0] == 1:
             bg_color = 'red'
-            prediction_result = 'Positivo'
+            prediction_result = 'Negativo'
         else:
             bg_color = 'green'
-            prediction_result = 'Negativo'
+            prediction_result = 'Positivo'
 
         confidence = prediction_proba[0][1] if prediction[0] == 1 else prediction_proba[0][0]
 
