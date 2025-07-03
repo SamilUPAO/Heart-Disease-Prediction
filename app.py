@@ -13,8 +13,8 @@ mean_std_filename = os.path.join(BASE_DIR, 'models', 'mean_std_values.pkl')
 def load_model():
     try:
         if not os.path.exists(model_filename):
-            st.error(f"❌ Archivo del modelo no encontrado en: {model_filename}")
-            st.info("📁 Archivos disponibles en el directorio:")
+            st.error(f"Archivo del modelo no encontrado en: {model_filename}")
+            st.info("Archivos disponibles en el directorio:")
             st.write(os.listdir(BASE_DIR))
             if os.path.exists(os.path.join(BASE_DIR, 'models')):
                 st.write("Archivos en models/:", os.listdir(os.path.join(BASE_DIR, 'models')))
@@ -24,7 +24,7 @@ def load_model():
             model = pickle.load(file)
         return model
     except Exception as e:
-        st.error(f"❌ Error al cargar el modelo: {str(e)}")
+        st.error(f"Error al cargar el modelo: {str(e)}")
         st.stop()
 
 # Función para cargar los valores de normalización
@@ -32,14 +32,14 @@ def load_model():
 def load_normalization_values():
     try:
         if not os.path.exists(mean_std_filename):
-            st.error(f"❌ Archivo de normalización no encontrado en: {mean_std_filename}")
+            st.error(f"Archivo de normalización no encontrado en: {mean_std_filename}")
             st.stop()
             
         with open(mean_std_filename, 'rb') as f:
             mean_std_values = pickle.load(f)
         return mean_std_values
     except Exception as e:
-        st.error(f"❌ Error al cargar valores de normalización: {str(e)}")
+        st.error(f"Error al cargar valores de normalización: {str(e)}")
         st.stop()
 
 # Cargar modelo y valores de normalización al inicio
