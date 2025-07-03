@@ -1,11 +1,50 @@
 import streamlit as st
 import pandas as pd
 import pickle
+import os
 
-model_filename = './models/model.pkl'
+# Usar rutas absolutas basadas en la ubicación del archivo
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+model_filename = os.path.join(BASE_DIR, 'models', 'model.pkl')
+mean_std_filename = os.path.join(BASE_DIR, 'models', 'mean_std_values.pkl')
 
-with open(model_filename, 'rb') as file:
-    model = pickle.load(file)
+# Función para cargar el modelo de forma segura
+@st.cache_resource
+def load_model():
+    try:
+        if not os.path.exists(model_filename):
+            st.error(f"❌ Archivo del modelo no encontrado en: {model_filename}")
+            st.info("📁 Archivos disponibles en el directorio:")
+            st.write(os.listdir(BASE_DIR))
+            if os.path.exists(os.path.join(BASE_DIR, 'models')):
+                st.write("Archivos en models/:", os.listdir(os.path.join(BASE_DIR, 'models')))
+            st.stop()
+            
+        with open(model_filename, 'rb') as file:
+            model = pickle.load(file)
+        return model
+    except Exception as e:
+        st.error(f"❌ Error al cargar el modelo: {str(e)}")
+        st.stop()
+
+# Función para cargar los valores de normalización
+@st.cache_resource
+def load_normalization_values():
+    try:
+        if not os.path.exists(mean_std_filename):
+            st.error(f"❌ Archivo de normalización no encontrado en: {mean_std_filename}")
+            st.stop()
+            
+        with open(mean_std_filename, 'rb') as f:
+            mean_std_values = pickle.load(f)
+        return mean_std_values
+    except Exception as e:
+        st.error(f"❌ Error al cargar valores de normalización: {str(e)}")
+        st.stop()
+
+# Cargar modelo y valores de normalización al inicio
+model = load_model()
+mean_std_values = load_normalization_values()
 
 def main():
     st.title('Predicción de Enfermedad Cardiaca')
@@ -36,10 +75,6 @@ def main():
     thal_options = ['Normal', 'Defecto Fijo', 'Defecto Reversible']
     thal = st.selectbox('Talasemia', thal_options)
     thal_num = thal_options.index(thal)
-
-    with open('models/mean_std_values.pkl', 'rb') as f:
-        mean_std_values = pickle.load(f)
-
 
     if st.button('Predict'):
         user_input = pd.DataFrame(data={
